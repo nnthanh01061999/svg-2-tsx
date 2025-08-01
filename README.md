@@ -11,17 +11,18 @@ A Visual Studio Code extension that converts SVG files from your clipboard into 
 - **Convert SVG to React Component**: Transform SVG code from your clipboard into a properly formatted React TSX component
 - **Icon Type Selection**: Organize components by icon type (outline, fill, color, 3d)
 - **Automatic Directory Creation**: Files are saved to configurable directories based on icon type
-- **Color Replacement**: Automatically replaces specified colors with `currentColor` for theme compatibility
+- **Smart Color Replacement**: Automatically replaces specified colors with `currentColor` for selected icon types
 - **Proper Formatting**: Creates well-structured React components with proper TypeScript support
 
 ## Installation
 
-1. Launch VS Code
-2. Go to Extensions (or press `Ctrl+Shift+X` / `Cmd+Shift+X` on Mac)
-3. Search for "SVG to TSX"
-4. Click Install
+1. Run `pnpm install`
+2. Then `pnpm build` now you got "svg-2-tsx-0.0.1.vsix"
+3. Go to Extensions (or press `Ctrl+Shift+X` / `Cmd+Shift+X` on Mac)
+4. Select "Install from VSIX..." choose vsix file.
+5. Reload VS Code
 
-Alternatively, download the `.vsix` file from the [releases page](https://github.com/yourusername/svg-2-tsx/releases) and install manually.
+Alternatively, use the already `.vsix` file in this repo and install manually.
 
 ## Usage
 
@@ -30,12 +31,13 @@ Alternatively, download the `.vsix` file from the [releases page](https://github
 1. Copy an SVG to your clipboard
 2. Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac)
 3. Run the "SVG to React Component" command
-4. Select the icon type (outline, fill, color, 3d)
+4. Select the icon type (Outline, Fill, Color, 3D)
 5. Enter a name for the icon component (in PascalCase)
 6. The extension will:
-   - Replace the configured color (default: #2B2B2B) with `currentColor`
+   - Replace the configured color with `currentColor` for specified icon types
    - Create a new file in the configured directory based on icon type
    - Save the React component with proper formatting
+   - Auto import new component to index file if `autoExportModule` is true
    - Open the newly created file
 
 ## Configuration
@@ -44,20 +46,32 @@ You can customize the extension settings in your VS Code settings:
 
 ```json
 "svg2tsx.iconPaths": {
-  "outline": "src/components/Common/Icon/icons/outline",
-  "fill": "src/components/Common/Icon/icons/fill",
-  "color": "src/components/Common/Icon/icons/color",
-  "3d": "src/components/Common/Icon/icons/3d"
+  "type": "object",
+  "default": {
+    "Outline": "src/components/Common/Icon/icons/outline",
+    "Fill": "src/components/Common/Icon/icons/fill",
+    "Color": "src/components/Common/Icon/icons/color",
+    "3D": "src/components/Common/Icon/icons/3d"
+  },
+  "description": "Paths for different icon types"
 },
-"svg2tsx.replaceColor": "#2B2B2B"
+"svg2tsx.replaceColor": {
+  "type": "object",
+  "default": {
+    "color": "#2B2B2B",
+    "type": [
+      "Fill",
+      "Outline"
+    ]
+  },
+  "description": "Replace this color with currentColor"
+},
+"svg2tsx.autoExportModule": {
+  "type": "boolean",
+  "default": true,
+  "description": "Auto export module"
+}
 ```
-
-### Settings
-
-| Setting                | Description                          | Default   |
-| ---------------------- | ------------------------------------ | --------- |
-| `svg2tsx.iconPaths`    | Paths for different icon types       | See above |
-| `svg2tsx.replaceColor` | Color to replace with `currentColor` | `#2B2B2B` |
 
 ## Requirements
 
@@ -89,4 +103,4 @@ This extension is licensed under the MIT License. See the LICENSE file for detai
 
 ## Feedback and Support
 
-Feel free to [open an issue](https://github.com/yourusername/svg-2-tsx/issues) for bug reports, feature requests, or general feedback.
+Feel free to [open an issue](https://github.com/nnthanh01061999/svg-2-tsx/issues) for bug reports, feature requests, or general feedback.
