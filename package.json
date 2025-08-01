@@ -39,8 +39,14 @@
           "description": "Paths for different icon types"
         },
         "svg2tsx.replaceColor": {
-          "type": "string",
-          "default": "#2B2B2B",
+          "type": "object",
+          "default": {
+            "color": "#2B2B2B",
+            "type": [
+              "Fill",
+              "Outline"
+            ]
+          },
           "description": "Replace this color with currentColor"
         },
         "svg2tsx.autoExportModule": {

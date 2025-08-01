@@ -64,16 +64,25 @@ export function activate(context: vscode.ExtensionContext) {
           iconPaths[iconType] ||
           `src/components/Common/Icon/icons/${iconType.toLowerCase()}`;
 
-        const replaceColor = config.get<string>("replaceColor", "#2B2B2B");
+        const replaceColor = config.get<{ color: string; type: string[] }>(
+          "replaceColor",
+          {
+            color: "#2B2B2B",
+            type: ["Fill", "Outline"],
+          }
+        );
 
         const autoExportModule = config.get<boolean>("autoExportModule", false);
 
-        let processedSvg = clipboardText.replace(
-          new RegExp(replaceColor, "g"),
-          "currentColor"
-        );
+        let processedSvg = clipboardText;
+        if (replaceColor.type.includes(iconType)) {
+          processedSvg = processedSvg.replace(
+            new RegExp(replaceColor.color, "g"),
+            "currentColor"
+          );
+        }
 
-        const componentCode = `const Icon = () => (\n\t\t${processedSvg}\n\t\t);\n\texport default Icon;\n`;
+        const componentCode = `const Icon = () => (\n\t\t${processedSvg}\n\t\t);\n\n\texport default Icon;\n`;
 
         const workspaceFolders = vscode.workspace.workspaceFolders;
         if (!workspaceFolders) {
