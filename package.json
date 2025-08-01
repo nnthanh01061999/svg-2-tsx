@@ -4,6 +4,7 @@
   "description": "Quick convert SVG to TSX file",
   "version": "0.0.1",
   "publisher": "nnthanh01061999",
+  "icon": "logo.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/nnthanh01061999/svg-2-tsx"
@@ -30,10 +31,10 @@
         "svg2tsx.iconPaths": {
           "type": "object",
           "default": {
-            "outline": "src/components/Common/Icon/icons/outline",
-            "fill": "src/components/Common/Icon/icons/fill",
-            "color": "src/components/Common/Icon/icons/color",
-            "3d": "src/components/Common/Icon/icons/3d"
+            "Outline": "src/components/Common/Icon/icons/outline",
+            "Fill": "src/components/Common/Icon/icons/fill",
+            "Color": "src/components/Common/Icon/icons/color",
+            "3D": "src/components/Common/Icon/icons/3d"
           },
           "description": "Paths for different icon types"
         },
@@ -41,6 +42,11 @@
           "type": "string",
           "default": "#2B2B2B",
           "description": "Replace this color with currentColor"
+        },
+        "svg2tsx.autoExportModule": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto export module"
         }
       }
     }

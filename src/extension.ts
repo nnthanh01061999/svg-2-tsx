@@ -15,18 +15,15 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       try {
-        // Get clipboard text
         const clipboardText = await vscode.env.clipboard.readText();
 
-        // Check if the clipboard content is an SVG
         if (!clipboardText.trim().startsWith("<svg")) {
           vscode.window.showErrorMessage("Clipboard content is not an SVG.");
           return;
         }
 
-        // Get icon type from user
         const iconType = await vscode.window.showQuickPick(
-          ["outline", "fill", "color", "3d"],
+          ["Outline", "Fill", "Color", "3D"],
           {
             placeHolder: "Select icon type",
             canPickMany: false,
@@ -34,10 +31,9 @@ export function activate(context: vscode.ExtensionContext) {
         );
 
         if (!iconType) {
-          return; // User cancelled
+          return;
         }
 
-        // Get icon name from user
         const iconName = await vscode.window.showInputBox({
           placeHolder: "Enter icon name (PascalCase)",
           prompt: "Name for the icon component",
@@ -53,10 +49,9 @@ export function activate(context: vscode.ExtensionContext) {
         });
 
         if (!iconName) {
-          return; // User cancelled
+          return;
         }
 
-        // Get configuration
         const config = vscode.workspace.getConfiguration("svg2tsx");
         const iconPaths = config.get<Record<string, string>>("iconPaths", {
           outline: "src/components/Common/Icon/icons/outline",
@@ -66,32 +61,26 @@ export function activate(context: vscode.ExtensionContext) {
         });
 
         const iconPath =
-          iconPaths[iconType] || `src/components/Common/Icon/icons/${iconType}`;
+          iconPaths[iconType] ||
+          `src/components/Common/Icon/icons/${iconType.toLowerCase()}`;
 
         const replaceColor = config.get<string>("replaceColor", "#2B2B2B");
 
-        // Process the SVG
+        const autoExportModule = config.get<boolean>("autoExportModule", false);
+
         let processedSvg = clipboardText.replace(
           new RegExp(replaceColor, "g"),
           "currentColor"
-        ); // Replace color with currentColor
+        );
 
-        // Create React component
-        const componentCode = `
-	const Icon = () => (
-	  ${processedSvg}
-	);
-	export default Icon;
-	`;
+        const componentCode = `const Icon = () => (\n\t\t${processedSvg}\n\t\t);\n\texport default Icon;\n`;
 
-        // Get workspace
         const workspaceFolders = vscode.workspace.workspaceFolders;
         if (!workspaceFolders) {
           vscode.window.showErrorMessage("No workspace folder open");
           return;
         }
 
-        // Create directory if it doesn't exist
         const fs = require("fs");
         const path = require("path");
         const fullIconPath = path.join(
@@ -110,25 +99,28 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
 
-        // Create the file
         const filePath = path.join(fullIconPath, `${iconName}.tsx`);
         fs.writeFileSync(filePath, componentCode);
 
-        const fileIndexPath = path.join(fullIconPath, "index.tsx");
-        fs.writeFileSync(
-          fileIndexPath,
-          fs
-            .readFileSync(fileIndexPath, "utf8")
-            .concat(
-              `export const ${iconName}${
-                iconType.charAt(0).toUpperCase() + iconType.slice(1)
-              } = dynamic(() => import('./${iconName}'));\n`
-            )
-        );
+        const fileIndexPath = path.join(fullIconPath, "index.ts");
+        const fileIndexContent = fs.readFileSync(fileIndexPath, "utf8");
 
-        // Open the file
+        if (autoExportModule) {
+          const importDynamic = `import dynamic from 'next/dynamic';\n`;
+          const exportIcon = `export const ${iconName}${iconType} = dynamic(() => import('./${iconName}'));\n`;
+          fs.writeFileSync(
+            fileIndexPath,
+            fileIndexContent
+              .concat(
+                fileIndexContent.includes(importDynamic) ? "" : importDynamic
+              )
+              .concat(fileIndexContent.includes(exportIcon) ? "" : exportIcon)
+          );
+        }
+
         const document = await vscode.workspace.openTextDocument(filePath);
         await vscode.window.showTextDocument(document);
+        await vscode.commands.executeCommand("workbench.action.files.save");
 
         vscode.window.showInformationMessage(
           `SVG converted to React component and saved as ${iconName}
