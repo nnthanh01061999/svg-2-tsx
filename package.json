@@ -22,6 +22,14 @@
       {
         "command": "svg-2-tsx.svgToReactComponent",
         "title": "S2T: SVG to React Component"
+      },
+      {
+        "command": "svg-2-tsx.startOptimizationServer",
+        "title": "S2T: Start SVG Optimization Server"
+      },
+      {
+        "command": "svg-2-tsx.stopOptimizationServer",
+        "title": "S2T: Stop SVG Optimization Server"
       }
     ],
     "configuration": {
@@ -53,19 +61,37 @@
           "type": "boolean",
           "default": true,
           "description": "Auto export module"
+        },
+        "svg2tsx.svgOptimizeUrl": {
+          "type": "object",
+          "default": {
+            "url": "http://localhost:3600/api/optimize",
+            "enabled": true
+          },
+          "description": "URL for SVG optimization tool"
+        },
+        "svg2tsx.optimizationServerPort": {
+          "type": "number",
+          "default": 3600,
+          "description": "Port for the SVG optimization server"
         }
       }
     }
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run compile",
+    "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "pnpm run compile && pnpm run lint",
+    "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test",
     "package": "vsce package",
-    "build": "pnpm compile && pnpm package"
+    "build": "npm run compile && npm run package"
+  },
+  "dependencies": {
+    "svgo": "^2.6.1",
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
   },
   "devDependencies": {
     "@types/vscode": "^1.74.0",
@@ -76,6 +102,8 @@
     "eslint": "^9.25.1",
     "typescript": "^5.8.3",
     "@vscode/test-cli": "^0.0.11",
-    "@vscode/test-electron": "^2.5.2"
+    "@vscode/test-electron": "^2.5.2",
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17"
   }
 }

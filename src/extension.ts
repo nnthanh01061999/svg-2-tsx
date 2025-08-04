@@ -1,6 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
+import { SVGOptimizationServer } from "./svgOptimizationServer";
+
+let optimizationServer: SVGOptimizationServer | null = null;
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -74,7 +77,49 @@ export function activate(context: vscode.ExtensionContext) {
 
         const autoExportModule = config.get<boolean>("autoExportModule", false);
 
+        const optimizeSvg = config.get<{ url: string; enabled: boolean }>(
+          "svgOptimizeUrl",
+          {
+            url: "http://localhost:3600/api/optimize",
+            enabled: true,
+          }
+        );
+
         let processedSvg = clipboardText;
+
+        if (optimizeSvg.enabled) {
+          try {
+            const response = await fetch(optimizeSvg.url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                svgString: clipboardText,
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = (await response.json()) as {
+              success: boolean;
+              data?: string;
+              error?: string;
+            };
+
+            if (data.success && data.data) {
+              processedSvg = data.data;
+            } else {
+              console.warn("SVG optimization failed:", data.error);
+            }
+          } catch (error) {
+            console.warn("Failed to optimize SVG:", error);
+            // Continue with original SVG if optimization fails
+          }
+        }
+
         if (replaceColor.type.includes(iconType)) {
           processedSvg = processedSvg.replace(
             new RegExp(replaceColor.color, "g"),
@@ -145,8 +190,83 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  context.subscriptions.push(svgToReactComponentCommand);
+  // Start optimization server command
+  const startOptimizationServerCommand = vscode.commands.registerCommand(
+    "svg-2-tsx.startOptimizationServer",
+    async () => {
+      try {
+        if (optimizationServer && optimizationServer.isRunning()) {
+          vscode.window.showInformationMessage(
+            `SVG Optimization Server is already running on port ${optimizationServer.getPort()}`
+          );
+          return;
+        }
+
+        const config = vscode.workspace.getConfiguration("svg2tsx");
+        const port = config.get<number>("optimizationServerPort", 3600);
+
+        optimizationServer = new SVGOptimizationServer(port);
+        await optimizationServer.start();
+
+        vscode.window.showInformationMessage(
+          `SVG Optimization Server started successfully on port ${port}`
+        );
+
+        // Show server info
+        const serverInfo = `Server running on: http://localhost:${port}
+Available endpoints:
+- POST /api/optimize - Optimize single SVG
+- POST /api/optimize/batch - Optimize multiple SVGs
+- GET /api/plugins - Get available SVGO plugins
+- GET /health - Health check`;
+
+        vscode.window.showInformationMessage(serverInfo);
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          `Failed to start SVG Optimization Server: ${(error as Error).message}`
+        );
+      }
+    }
+  );
+
+  // Stop optimization server command
+  const stopOptimizationServerCommand = vscode.commands.registerCommand(
+    "svg-2-tsx.stopOptimizationServer",
+    async () => {
+      try {
+        if (!optimizationServer || !optimizationServer.isRunning()) {
+          vscode.window.showInformationMessage(
+            "SVG Optimization Server is not running"
+          );
+          return;
+        }
+
+        await optimizationServer.stop();
+        optimizationServer = null;
+
+        vscode.window.showInformationMessage(
+          "SVG Optimization Server stopped successfully"
+        );
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          `Failed to stop SVG Optimization Server: ${(error as Error).message}`
+        );
+      }
+    }
+  );
+
+  context.subscriptions.push(
+    svgToReactComponentCommand,
+    startOptimizationServerCommand,
+    stopOptimizationServerCommand
+  );
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+  if (optimizationServer && optimizationServer.isRunning()) {
+    optimizationServer.stop().catch((error) => {
+      console.error("Error stopping optimization server:", error);
+    });
+  }
+}
