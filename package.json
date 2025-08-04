@@ -1,7 +1,7 @@
 {
   "name": "svg-2-tsx",
-  "displayName": "svg-2-tsx",
-  "description": "Quick convert SVG to TSX file",
+  "displayName": "SVG 2 TSX",
+  "description": "Quick convert SVG to optimized TSX component file",
   "version": "0.0.1",
   "publisher": "nnthanh01061999",
   "icon": "logo.png",
@@ -15,7 +15,13 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:svg-2-tsx.optimizeAllSvgInFolder",
+    "onCommand:svg-2-tsx.optimizeSingleTsxFile",
+    "onCommand:svg-2-tsx.svgToReactComponent",
+    "onCommand:svg-2-tsx.startOptimizationServer",
+    "onCommand:svg-2-tsx.stopOptimizationServer"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -30,8 +36,37 @@
       {
         "command": "svg-2-tsx.stopOptimizationServer",
         "title": "S2T: Stop SVG Optimization Server"
+      },
+      {
+        "command": "svg-2-tsx.optimizeAllSvgInFolder",
+        "title": "S2T: Optimize All SVG in Folder"
+      },
+      {
+        "command": "svg-2-tsx.optimizeSingleTsxFile",
+        "title": "S2T: Optimize SVG in File"
       }
     ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "svg-2-tsx.optimizeAllSvgInFolder",
+          "group": "navigation@1",
+          "when": "explorerResourceIsFolder"
+        },
+        {
+          "command": "svg-2-tsx.optimizeSingleTsxFile",
+          "group": "navigation@2",
+          "when": "resourceExtname == .tsx"
+        }
+      ],
+      "file/context": [
+        {
+          "command": "svg-2-tsx.optimizeSingleTsxFile",
+          "group": "navigation@1",
+          "when": "resourceExtname == .tsx"
+        }
+      ]
+    },
     "configuration": {
       "type": "object",
       "title": "Svg 2 Tsx configuration",
@@ -62,7 +97,7 @@
           "default": true,
           "description": "Auto export module"
         },
-        "svg2tsx.svgOptimizeUrl": {
+        "svg2tsx.svgOptimize": {
           "type": "object",
           "default": {
             "url": "http://localhost:3600/api/optimize",
@@ -74,6 +109,56 @@
           "type": "number",
           "default": 3600,
           "description": "Port for the SVG optimization server"
+        },
+        "svg2tsx.svgOptimizeConfig": {
+          "type": "object",
+          "default": {
+            "multipass": true,
+            "plugins": [
+              {
+                "name": "preset-default",
+                "params": {
+                  "overrides": {
+                    "removeViewBox": false,
+                    "removeTitle": false,
+                    "removeDesc": false,
+                    "removeDoctype": true,
+                    "removeXMLProcInst": true,
+                    "removeComments": true,
+                    "removeMetadata": true,
+                    "removeEditorsNSData": true,
+                    "cleanupAttrs": true,
+                    "mergeStyles": true,
+                    "inlineStyles": true,
+                    "minifyStyles": true,
+                    "cleanupIDs": true,
+                    "removeUselessDefs": true,
+                    "convertPathData": true,
+                    "convertColors": true,
+                    "removeUnknownsAndDefaults": true,
+                    "removeUselessStrokeAndFill": true,
+                    "removeEnableBackground": true,
+                    "removeHiddenElems": true,
+                    "removeEmptyText": true,
+                    "convertShapeToPath": true,
+                    "moveElemsAttrsToGroup": true,
+                    "moveGroupAttrsToElems": true,
+                    "collapseGroups": true,
+                    "convertEllipseToCircle": true,
+                    "convertTransform": true,
+                    "removeEmptyAttrs": true,
+                    "removeEmptyContainers": true,
+                    "mergePaths": true,
+                    "cleanupNumericValues": true,
+                    "sortAttrs": true,
+                    "sortDefsChildren": true,
+                    "removeDimensions": true
+                  }
+                }
+              }
+            ]
+          },
+          "description": "Config for SVG optimization"
         }
       }
     }

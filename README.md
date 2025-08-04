@@ -1,403 +1,403 @@
-# SVG to TSX Converter
+# SVG to TSX Converter - User Guide
 
-A VS Code extension that converts SVG files to React TypeScript components with built-in SVG optimization capabilities using SVGO.
+A powerful VS Code extension that converts SVG files to React TypeScript components with built-in optimization. Perfect for developers who want to use SVG icons in their React projects with minimal setup.
 
-## ✨ Features
+## 🎯 What This Extension Does
 
-- **SVG to React Component Conversion**: Convert SVG files to React TypeScript components
-- **SVG Optimization Server**: Built-in RESTful API server for optimizing SVG files using SVGO
-- **Multiple Icon Types**: Support for Outline, Fill, Color, and 3D icon types
-- **Color Replacement**: Automatic replacement of specific colors with `currentColor`
-- **Auto Export**: Automatic module export generation
-- **Batch Processing**: Optimize multiple SVG files at once
-- **Real-time Optimization**: Automatically optimize SVGs during component conversion
+This extension helps you:
 
-## 🚀 Quick Start
+- **Convert SVG files to React components** with a single command
+- **Optimize SVG files** to reduce file size by 50-70%
+- **Batch process multiple files** at once
+- **Automatically organize** components by icon type
+- **Generate proper TypeScript** components ready for React
 
-### Installation
+## 🚀 Getting Started
 
-1. **From VS Code Marketplace** (Recommended)
+### Step 1: Install the Extension
 
-   - Open VS Code
-   - Go to Extensions (Ctrl+Shift+X)
-   - Search for "SVG to TSX"
-   - Install the extension
+**Option A: From VS Code Marketplace (Recommended)**
 
-2. **From Source**
-   ```bash
-   git clone https://github.com/nnthanh01061999/svg-2-tsx.git
-   cd svg-2-tsx
-   pnpm install
-   pnpm run compile
-   ```
+1. Open VS Code
+2. Press `Ctrl+Shift+X` (Windows/Linux) or `Cmd+Shift+X` (Mac) to open Extensions
+3. Search for "SVG to TSX"
+4. Click "Install"
 
-### Basic Usage
-
-1. Copy an SVG to your clipboard
-2. Open the command palette (`Cmd+Shift+P` on Mac, `Ctrl+Shift+P` on Windows/Linux)
-3. Run: `S2T: SVG to React Component`
-4. Select the icon type (Outline, Fill, Color, or 3D)
-5. Enter a name for the component (PascalCase)
-6. The component will be created in the appropriate directory
-
-## 🔧 SVG Optimization Server
-
-The extension includes a powerful built-in RESTful API server for optimizing SVG files using SVGO.
-
-### Starting the Server
-
-1. Open the command palette
-2. Run: `S2T: Start SVG Optimization Server`
-3. The server will start on the configured port (default: 3600)
-
-### Stopping the Server
-
-1. Open the command palette
-2. Run: `S2T: Stop SVG Optimization Server`
-
-### API Endpoints
-
-#### `POST /api/optimize`
-
-Optimize a single SVG file.
-
-**Request Body:**
-
-```json
-{
-  "svgString": "<svg>...</svg>",
-  "config": {
-    "multipass": true,
-    "plugins": ["preset-default"]
-  }
-}
-```
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "data": "<optimized-svg>",
-  "originalSize": 1418,
-  "optimizedSize": 619,
-  "reductionPercentage": 56.35
-}
-```
-
-#### `POST /api/optimize/batch`
-
-Optimize multiple SVG files.
-
-**Request Body:**
-
-```json
-{
-  "svgFiles": [
-    {
-      "name": "icon1.svg",
-      "content": "<svg>...</svg>"
-    },
-    {
-      "name": "icon2.svg",
-      "content": "<svg>...</svg>"
-    }
-  ],
-  "config": {
-    "multipass": true,
-    "plugins": ["preset-default"]
-  }
-}
-```
-
-#### `GET /api/plugins`
-
-Get a list of available SVGO plugins.
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "plugins": [
-    "removeDoctype",
-    "removeXMLProcInst",
-    "removeComments",
-    "removeMetadata",
-    "removeEditorsNSData",
-    "cleanupAttrs",
-    "mergeStyles",
-    "inlineStyles",
-    "minifyStyles",
-    "cleanupIDs",
-    "removeUselessDefs",
-    "cleanupNumericValues",
-    "convertColors",
-    "removeUnknownsAndDefaults",
-    "removeNonInheritableGroupAttrs",
-    "removeUselessStrokeAndFill",
-    "removeViewBox",
-    "cleanupEnableBackground",
-    "removeHiddenElems",
-    "removeEmptyText",
-    "convertShapeToPath",
-    "convertEllipseToCircle",
-    "moveElemsAttrsToGroup",
-    "moveGroupAttrsToElems",
-    "collapseGroups",
-    "convertPathData",
-    "convertTransform",
-    "removeEmptyAttrs",
-    "removeEmptyContainers",
-    "mergePaths",
-    "removeUnusedNS",
-    "sortDefsChildren",
-    "removeTitle",
-    "removeDesc"
-  ]
-}
-```
-
-#### `GET /health`
-
-Health check endpoint.
-
-**Response:**
-
-```json
-{
-  "status": "ok",
-  "message": "SVG Optimization Server is running"
-}
-```
-
-### Example Usage
-
-#### Using curl
+**Option B: From Source**
 
 ```bash
-# Optimize a single SVG
-curl --location 'http://localhost:3600/api/optimize' \
---header 'Content-Type: application/json' \
---data '{
-  "svgString": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6.74776 5.99756V2.99658C6.74776 2.58244 7.08364 2.24669 7.49776 2.24658C7.91197 2.24658 8.24776 2.58237 8.24776 2.99658V5.99756C8.24776 6.41177 7.91197 6.74756 7.49776 6.74756C7.08364 6.74745 6.74776 6.4117 6.74776 5.99756Z\" fill=\"#2B2B2B\"/></svg>",
-  "config": {
-    "multipass": true,
-    "plugins": ["preset-default"]
-  }
-}'
-
-# Health check
-curl http://localhost:3600/health
+git clone https://github.com/nnthanh01061999/svg-2-tsx.git
+cd svg-2-tsx
+pnpm install
+pnpm run compile
 ```
 
-#### Using JavaScript/TypeScript
+### Step 2: Start the Optimization Server
 
-```javascript
-// Optimize SVG
-const response = await fetch("http://localhost:3600/api/optimize", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    svgString: "<svg>...</svg>",
-    config: {
-      multipass: true,
-      plugins: ["preset-default"],
-    },
-  }),
-});
+Before using the extension, you need to start the SVG optimization server:
 
-const result = await response.json();
-console.log(`Optimized SVG: ${result.data}`);
-console.log(`Size reduction: ${result.reductionPercentage}%`);
+1. Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac) to open Command Palette
+2. Type "S2T: Start SVG Optimization Server" and press Enter
+3. You'll see a message confirming the server is running on port 3600
+
+## 📖 How to Use
+
+### Converting SVG to React Component
+
+**Method 1: Using Clipboard (Easiest)**
+
+1. **Copy an SVG** to your clipboard (from a file, website, or design tool)
+2. **Open Command Palette**: `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac)
+3. **Run the command**: Type "S2T: SVG to React Component" and press Enter
+4. **Select icon type**: Choose from Outline, Fill, Color, or 3D
+5. **Enter component name**: Use PascalCase (e.g., "HomeIcon", "UserAvatar")
+6. **Done!** The component will be created in the appropriate folder
+
+**Example:**
+
 ```
+Input SVG: <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+           </svg>
+
+Output: const HomeIcon = () => (
+           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+           </svg>
+         );
+
+         export default HomeIcon;
+```
+
+### Optimizing Existing SVG Components
+
+#### Single File Optimization
+
+**Method 1: Right-click Menu**
+
+1. Right-click on any `.tsx` file containing SVG components
+2. Select "S2T: Optimize SVG in File"
+3. The extension will automatically optimize the SVG and show you the results
+
+**Method 2: Command Palette**
+
+1. Open Command Palette: `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac)
+2. Type "S2T: Optimize SVG in File" and press Enter
+3. Select the file you want to optimize
+
+**What happens:**
+
+- The extension extracts SVG content from your component
+- Sends it to the optimization server
+- Replaces the original SVG with the optimized version
+- Shows you the size reduction achieved
+
+#### Batch Optimization (Multiple Files)
+
+**Method 1: Right-click on Folder**
+
+1. Right-click on any folder containing `.tsx` files
+2. Select "S2T: Optimize All SVG in Folder"
+3. The extension will process all files and show progress
+
+**Method 2: Command Palette**
+
+1. Open Command Palette: `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac)
+2. Type "S2T: Optimize All SVG in Folder" and press Enter
+3. Select the folder to process
+
+**What happens:**
+
+- Scans the folder for all `.tsx` files
+- Processes each file that contains SVG components
+- Shows progress as it works
+- Displays a summary of results
 
 ## ⚙️ Configuration
 
-The extension can be configured through VS Code settings:
+### Accessing Settings
+
+1. Open VS Code Settings: `Ctrl+,` (Windows/Linux) or `Cmd+,` (Mac)
+2. Search for "svg2tsx" to see all available options
+
+### Key Settings
+
+#### Icon Paths
+
+Control where different types of icons are saved:
 
 ```json
 {
   "svg2tsx.iconPaths": {
-    "Outline": "src/components/Common/Icon/icons/outline",
-    "Fill": "src/components/Common/Icon/icons/fill",
-    "Color": "src/components/Common/Icon/icons/color",
-    "3D": "src/components/Common/Icon/icons/3d"
-  },
-  "svg2tsx.replaceColor": {
-    "color": "#2B2B2B",
-    "type": ["Fill", "Outline"]
-  },
-  "svg2tsx.autoExportModule": true,
-  "svg2tsx.optimizationServerPort": 3600,
-  "svg2tsx.svgOptimizeUrl": {
-    "url": "http://localhost:3600/api/optimize",
-    "enabled": true
+    "Outline": "src/components/icons/outline",
+    "Fill": "src/components/icons/fill",
+    "Color": "src/components/icons/color",
+    "3D": "src/components/icons/3d"
   }
 }
 ```
 
-### Configuration Options
+#### Color Replacement
 
-| Option                   | Type    | Default                                                          | Description                                       |
-| ------------------------ | ------- | ---------------------------------------------------------------- | ------------------------------------------------- |
-| `iconPaths`              | Object  | See above                                                        | Customize output paths for different icon types   |
-| `replaceColor`           | Object  | `{"color": "#2B2B2B", "type": ["Fill", "Outline"]}`              | Configure color replacement settings              |
-| `autoExportModule`       | Boolean | `true`                                                           | Enable/disable automatic module export generation |
-| `optimizationServerPort` | Number  | `3600`                                                           | Set the port for the SVG optimization server      |
-| `svgOptimizeUrl`         | Object  | `{"url": "http://localhost:3600/api/optimize", "enabled": true}` | Configure automatic SVG optimization              |
+Automatically replace specific colors with `currentColor`:
 
-## 🛠️ Development
-
-### Prerequisites
-
-- Node.js 18+
-- pnpm (recommended) or npm
-
-### Setup
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/nnthanh01061999/svg-2-tsx.git
-   cd svg-2-tsx
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   pnpm install
-   ```
-
-3. Compile the extension:
-
-   ```bash
-   pnpm run compile
-   ```
-
-4. Package the extension:
-   ```bash
-   pnpm run package
-   ```
-
-### Available Scripts
-
-| Script             | Description                      |
-| ------------------ | -------------------------------- |
-| `pnpm run compile` | Compile TypeScript to JavaScript |
-| `pnpm run watch`   | Watch for changes and recompile  |
-| `pnpm run lint`    | Run ESLint                       |
-| `pnpm run test`    | Run tests                        |
-| `pnpm run package` | Create VSIX package              |
-| `pnpm run build`   | Compile and package              |
-
-### Project Structure
-
-```
-svg-2-tsx/
-├── src/
-│   ├── extension.ts              # Main extension logic
-│   ├── svgOptimizationServer.ts  # SVG optimization server
-│   └── types/
-│       └── svgo.d.ts            # SVGO type declarations
-├── out/                         # Compiled JavaScript
-├── package.json                 # Extension manifest
-├── tsconfig.json               # TypeScript configuration
-└── README.md                   # This file
+```json
+{
+  "svg2tsx.replaceColor": {
+    "color": "#2B2B2B",
+    "type": ["Fill", "Outline"]
+  }
+}
 ```
 
-## 📦 Dependencies
+#### Auto Export
 
-### Production Dependencies
+Automatically generate index files for easy importing:
 
-- **SVGO** (v2.8.0): SVG optimization library
-- **Express** (v4.21.2): Web framework for the RESTful API
-- **CORS** (v2.8.5): Cross-origin resource sharing middleware
+```json
+{
+  "svg2tsx.autoExportModule": true
+}
+```
 
-### Development Dependencies
+#### Server Port
 
-- **TypeScript**: Type safety and compilation
-- **ESLint**: Code linting
-- **VS Code Extension API**: Extension development
+Change the optimization server port if needed:
 
-## 🎯 Performance
+```json
+{
+  "svg2tsx.optimizationServerPort": 3600
+}
+```
 
-The SVG optimization typically achieves:
+## 🔧 Advanced Features
 
-- **50-70% file size reduction** for most SVGs
-- **Real-time optimization** during component conversion
-- **Batch processing** for multiple files
-- **Configurable optimization levels** via SVGO plugins
+### SVG Optimization Server API
 
-## 🤝 Contributing
+The extension includes a RESTful API server that you can use programmatically:
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Add tests if applicable
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+#### Optimize a Single SVG
 
-### Development Guidelines
+```bash
+curl -X POST http://localhost:3600/api/optimize \
+  -H "Content-Type: application/json" \
+  -d '{
+    "svgString": "<svg>...</svg>",
+    "config": {
+      "multipass": true,
+      "plugins": ["preset-default"]
+    }
+  }'
+```
 
-- Follow TypeScript best practices
-- Use ESLint for code quality
-- Add tests for new features
-- Update documentation for API changes
-- Follow the existing code style
+#### Check Server Health
 
-## 📄 License
+```bash
+curl http://localhost:3600/health
+```
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+#### Get Available Plugins
+
+```bash
+curl http://localhost:3600/api/plugins
+```
+
+### Using the API in Your Code
+
+```javascript
+// Optimize SVG programmatically
+const optimizeSvg = async (svgString) => {
+  const response = await fetch("http://localhost:3600/api/optimize", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      svgString,
+      config: { multipass: true, plugins: ["preset-default"] },
+    }),
+  });
+
+  const result = await response.json();
+  return result.data; // Optimized SVG
+};
+```
+
+## 📁 File Organization
+
+The extension automatically organizes your components:
+
+```
+src/
+├── components/
+│   └── icons/
+│       ├── outline/
+│       │   ├── HomeIcon.tsx
+│       │   ├── UserIcon.tsx
+│       │   └── index.ts
+│       ├── fill/
+│       │   ├── HomeIcon.tsx
+│       │   └── index.ts
+│       ├── color/
+│       │   └── index.ts
+│       └── 3d/
+│           └── index.ts
+```
+
+### Importing Components
+
+With auto-export enabled, you can import components like this:
+
+```typescript
+import { HomeIconOutline } from "./components/icons/outline";
+import { UserIconFill } from "./components/icons/fill";
+```
 
 ## 🐛 Troubleshooting
 
-### Common Issues
+### Common Issues and Solutions
 
-1. **Server won't start**
+#### 1. "Server won't start"
 
-   - Check if port 3600 is already in use
-   - Try changing the port in settings
-   - Ensure no other instances are running
+**Problem**: Port 3600 is already in use
+**Solution**:
 
-2. **Optimization fails**
+- Change the port in settings: `"svg2tsx.optimizationServerPort": 3601`
+- Or stop other services using port 3600
 
-   - Verify the SVG is valid
-   - Check server logs for errors
-   - Ensure the server is running
+#### 2. "Context menu not showing"
 
-3. **Build errors**
-   - Run `pnpm install` to ensure all dependencies are installed
-   - Check TypeScript compilation with `pnpm run compile`
-   - Verify Node.js version (18+ required)
+**Problem**: Right-click menu options don't appear
+**Solution**:
+
+- Reload VS Code: `Ctrl+Shift+P` → "Developer: Reload Window"
+- Make sure you're right-clicking on a folder (not a file) for folder operations
+- Try using the command palette instead
+
+#### 3. "Optimization failed"
+
+**Problem**: SVG optimization doesn't work
+**Solution**:
+
+- Check if the server is running
+- Verify your SVG is valid
+- Try a simpler SVG first
+
+#### 4. "Folder optimization error"
+
+**Problem**: "Illegal argument: base" error
+**Solution**:
+
+- Use the command palette instead of right-click
+- Make sure the folder exists and is accessible
+- Try selecting the folder manually when prompted
+
+#### 5. "Build errors"
+
+**Problem**: Extension won't compile
+**Solution**:
+
+- Ensure Node.js 18+ is installed
+- Run `pnpm install` to install dependencies
+- Check TypeScript compilation: `pnpm run compile`
 
 ### Getting Help
 
-- [Open an issue](https://github.com/nnthanh01061999/svg-2-tsx/issues) for bug reports
-- [Create a discussion](https://github.com/nnthanh01061999/svg-2-tsx/discussions) for questions
-- Check the [VS Code Extension Marketplace](https://marketplace.visualstudio.com/) for updates
+- **GitHub Issues**: [Report bugs here](https://github.com/nnthanh01061999/svg-2-tsx/issues)
+- **Discussions**: [Ask questions here](https://github.com/nnthanh01061999/svg-2-tsx/discussions)
+- **VS Code Marketplace**: Check for updates
 
-## 📈 Changelog
+## 📊 Performance Tips
 
-### v0.0.1
+### Best Practices
 
-- Initial release
-- SVG to React component conversion
-- SVG optimization server with RESTful API
-- Multiple icon type support
-- Color replacement functionality
-- Auto export module generation
+1. **Use the optimization server** for best results
+2. **Batch process** multiple files instead of one by one
+3. **Organize by icon type** for better maintainability
+4. **Use PascalCase** for component names
+5. **Enable auto-export** for easier importing
+
+### Expected Results
+
+- **File size reduction**: 50-70% for most SVGs
+- **Processing speed**: ~100ms per SVG
+- **Batch processing**: Can handle hundreds of files
+- **Memory usage**: Minimal impact on VS Code performance
+
+## 🎨 Icon Type Guidelines
+
+### When to Use Each Type
+
+- **Outline**: Icons with stroke-based design, good for navigation
+- **Fill**: Solid icons, good for primary actions
+- **Color**: Multi-colored icons, good for branding
+- **3D**: Three-dimensional icons, good for special features
+
+### Example Use Cases
+
+```typescript
+// Navigation icons (Outline)
+import { HomeIconOutline, SettingsIconOutline } from "./icons/outline";
+
+// Action buttons (Fill)
+import { AddIconFill, DeleteIconFill } from "./icons/fill";
+
+// Brand icons (Color)
+import { LogoIconColor } from "./icons/color";
+
+// Feature icons (3D)
+import { TrophyIcon3D } from "./icons/3d";
+```
+
+## 🔄 Workflow Examples
+
+### Complete Workflow: Adding New Icons
+
+1. **Get SVG**: Copy SVG from design tool or website
+2. **Convert**: Use "S2T: SVG to React Component"
+3. **Optimize**: Right-click file → "S2T: Optimize SVG in File"
+4. **Import**: Use the generated component in your code
+
+### Complete Workflow: Optimizing Existing Project
+
+1. **Start server**: "S2T: Start SVG Optimization Server"
+2. **Batch optimize**: Right-click project folder → "S2T: Optimize All SVG in Folder"
+3. **Review results**: Check the optimization summary
+4. **Stop server**: "S2T: Stop SVG Optimization Server" when done
+
+## 📈 What's New
+
+### Latest Features
+
+- **Folder context menu**: Right-click folders to optimize all SVG components
+- **File context menu**: Right-click individual files to optimize single components
+- **Batch processing**: Process hundreds of files at once
+- **Real-time optimization**: Automatic optimization during conversion
+- **Progress tracking**: See optimization progress in real-time
+
+## 🤝 Contributing
+
+Want to help improve this extension?
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes**
+4. **Add tests** if applicable
+5. **Commit**: `git commit -m 'Add amazing feature'`
+6. **Push**: `git push origin feature/amazing-feature`
+7. **Open a Pull Request**
+
+## 📄 License
+
+MIT License - feel free to use this extension in your projects!
 
 ## 🙏 Acknowledgments
 
-- [SVGO](https://github.com/svg/svgo) for SVG optimization
-- [VS Code Extension API](https://code.visualstudio.com/api) for extension development
-- [Express.js](https://expressjs.com/) for the web server
-- All contributors and users of this extension
+- **SVGO**: For powerful SVG optimization
+- **VS Code Team**: For the excellent extension API
+- **Express.js**: For the web server framework
+- **Community**: For feedback and contributions
 
 ---
 
 **Made with ❤️ for the React/TypeScript community**
+
+_Need help? Check out our [GitHub repository](https://github.com/nnthanh01061999/svg-2-tsx) for more information and support._
